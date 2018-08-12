@@ -5,6 +5,8 @@ TagManager:
   serializedVersion: 2
   tags:
   - File
+  - Target
+  - GarbageCollector
   layers:
   - Default
   - TransparentFX

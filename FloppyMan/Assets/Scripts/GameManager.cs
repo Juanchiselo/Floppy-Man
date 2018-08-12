@@ -13,7 +13,7 @@ public class GameManager : MonoBehaviour
 
     public GameObject fileSpawner;
     public GameObject filePrefab;
-    public GameObject[] targetBounds;
+    public GameObject[] targets;
 
     public static GameManager Instance = null;
 
@@ -36,13 +36,7 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //if (Input.GetKeyDown(KeyCode.Escape)
-        //    && (!SceneManager.GetActiveScene().name.Equals("MainMenuScene")
-        //            && !SceneManager.GetActiveScene().name.Equals("CreditsScene")
-        //            && !SceneManager.GetActiveScene().name.Equals("GameScene")))
-        //{
-        //    PauseGame();
-        //}
+
     }
 
     void OnEnable()
@@ -70,28 +64,22 @@ public class GameManager : MonoBehaviour
             //    backgroundMusic.clip = null;
             //    backgroundMusic.Stop();
             //    break;
-            //case "Tutorial":
-            //    backgroundMusic.clip = musicPlaylist[2];
-            //    break;
             case "GameScene":
                 fileSpawner = GameObject.Find("FileSpawner");
                 filePrefab = GameObject.Find("FilePrefab");
-                targetBounds = new GameObject[2];
-                targetBounds[0] = GameObject.Find("UpperBoundTarget");
-                targetBounds[1] = GameObject.Find("LowerBoundTarget");
+                targets = new GameObject[2];
+                targets[0] = GameObject.Find("UpperBoundTarget");
+                targets[1] = GameObject.Find("LowerBoundTarget");
                 backgroundMusic.clip = musicPlaylist[1];
                 InvokeRepeating("InstantiateFile", 0.0f, 1.0f);
                 break;
-            //case "MiniGameScene":
-            //    break;
+           
             //case "CreditsScene":
             //    videoPlayer = GameObject.Find("Video Player").GetComponent<VideoPlayer>();
             //    videoPlayer.loopPointReached += EndReached;
             //    backgroundMusic.clip = musicPlaylist[3];
             //    break;
-            //case "Forest":
-            //    backgroundMusic.clip = musicPlaylist[0];
-            //    break;
+            
             default:
                 break;
         }
@@ -148,8 +136,6 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public void LoadMainMenuScene()
     {
-        //if (Time.timeScale == 0.0f)
-        //    UnpauseGame();
         SceneManager.LoadScene("BSODScene");
         StartCoroutine(LoadSceneAsync("GameScene"));
     }
@@ -172,15 +158,15 @@ public class GameManager : MonoBehaviour
     {
         print("Executing QuitGame");
 
-#if UNITY_EDITOR
-        if (Application.isEditor)
-            UnityEditor.EditorApplication.isPlaying = false;
-#endif
+        #if UNITY_EDITOR
+            if (Application.isEditor)
+                UnityEditor.EditorApplication.isPlaying = false;
+        #endif
 
-#if UNITY_STANDALONE
-        if (Application.isPlaying)
-            Application.Quit();
-#endif
+        #if UNITY_STANDALONE
+            if (Application.isPlaying)
+                Application.Quit();
+        #endif
     }
     #endregion
 }
