@@ -61,14 +61,17 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Scripts\CameraController.cs" />
+    <Compile Include="Assets\Auto Letterbox\ForceCameraRatio.cs" />
+    <Compile Include="Assets\Scripts\DatabaseManager.cs" />
+    <Compile Include="Assets\Scripts\File.cs" />
     <Compile Include="Assets\Scripts\FileSpawner.cs" />
     <Compile Include="Assets\Scripts\GameManager.cs" />
     <Compile Include="Assets\Scripts\GarbageCollector.cs" />
     <Compile Include="Assets\Scripts\GUIManager.cs" />
-    <Compile Include="Assets\Scripts\InputManager.cs" />
     <Compile Include="Assets\Scripts\PlayerController.cs" />
+    <Compile Include="Assets\Scripts\RandomNumberGenerator.cs" />
     <Compile Include="Assets\Scripts\SceneFader.cs" />
+    <Compile Include="Assets\Scripts\ScoreData.cs" />
     <Compile Include="Assets\Scripts\TextAnimator.cs" />
     <Reference Include="UnityEditor.StandardEvents">
       <HintPath>C:/Users/Jose Juan Sandoval/Documents/GitHub/Floppy-Man/FloppyMan/Library/ScriptAssemblies/UnityEditor.StandardEvents.dll</HintPath>

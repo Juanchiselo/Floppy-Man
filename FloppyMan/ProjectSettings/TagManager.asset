@@ -7,6 +7,7 @@ TagManager:
   - File
   - Target
   - GarbageCollector
+  - Antivirus
   layers:
   - Default
   - TransparentFX

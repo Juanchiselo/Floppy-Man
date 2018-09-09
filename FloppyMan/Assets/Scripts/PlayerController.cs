@@ -9,113 +9,88 @@ public class PlayerController : MonoBehaviour {
     public event OnPlayerDeathHandler onPlayerDeath;
     #endregion
 
-    public float speed = 5.0f;
-    public float jumpHeight = 200.0f;
+    [Header("Jump Variables")]
+    public float fallMultiplier = 2.5f;
+    public float lowJumpMultiplier = 2.0f;
+    public float jumpVelocity = 10.0f;
+
     public bool isGrounded = true;
-    private bool canChangeColor = true;
-    private Vector3 playerPosition = Vector3.zero;
+    public int jumpsLeft = 2;
+
+    private Rigidbody rb;
+
+    public void Awake()
+    {
+        rb = GetComponent<Rigidbody>();
+    }
 
     // Use this for initialization
     void Start()
     {
-        // Set the color of the cube to red.
-        //GetComponent<Renderer>().material.color = Color.red;
-        
-        // Freeze the rotation in all axes.
-        //transform.GetComponent<Rigidbody>().constraints =
-        //    RigidbodyConstraints.FreezeRotation;
     }
 
-    // Update is called once per frame
     void Update()
     {
-        //// Constantly keep the player moving to the right.
-        //playerPosition.x = transform.position.x + speed * Time.deltaTime;
-        //playerPosition.y = transform.position.y;
-        //playerPosition.z = 0;
-        //transform.position = playerPosition;
-
-        if (Input.GetKeyDown(KeyCode.Space))
-            Jump();
-    }
-
-    public void SetSpeed()
-    {
-        //speed = GameManager.Instance.GetSpeed();
-    }
-
-    // Jump function
-    public void Jump()
-    {
-        if (isGrounded)
+        if (Input.GetButtonDown("Jump"))
         {
             isGrounded = false;
 
-            Vector3 jump = new Vector3(0.0f, jumpHeight, 0.0f);
-
-            GetComponent<Rigidbody>().AddForce(jump);
+            if (!isGrounded && jumpsLeft > 0)
+            {
+                jumpsLeft--;
+                GetComponent<Rigidbody>().velocity = Vector3.up * jumpVelocity;
+            }
         }
+
+        if (rb.velocity.y < 0)
+            rb.velocity += Vector3.up * Physics.gravity.y * (fallMultiplier - 1) * Time.deltaTime;
+        else if(rb.velocity.y > 0 && !Input.GetButton("Jump"))
+            rb.velocity += Vector3.up * Physics.gravity.y * (lowJumpMultiplier - 1) * Time.deltaTime;
     }
 
-    public void Slide()
-    {
-        if (isGrounded)
-        {
-            Debug.Log("I'm Sliding!");
-        }
-    }
-
-    public void ChangeColor(string color)
-    {
-        if (canChangeColor)
-        {
-            if (string.Equals(color, "Red"))
-                GetComponent<Renderer>().material.color = Color.red;
-
-            if (string.Equals(color, "Blue"))
-                GetComponent<Renderer>().material.color = Color.blue;
-        }
-    }
-
-
-    // To detect whether the player is grounded.
     void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.name == "Floor")
-            isGrounded = true;
-
-        if (collision.gameObject.tag == "Obstacle")
         {
-            if (GetComponent<Renderer>().material.color
-               == collision.gameObject.GetComponent<Renderer>().material.color)
-            {
-                collision.gameObject.GetComponent<Rigidbody>().detectCollisions = false;
-            }
-            else
-            {
-                if (onPlayerDeath != null)
-                {
-                    onPlayerDeath();
-                    Destroy(gameObject);
-                }
-            }
+            isGrounded = true;
+            jumpsLeft = 2;
         }
     }
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.tag == "File")
-            Destroy(other.gameObject);
-    }
+        {
+            if (other.gameObject.GetComponent<Renderer>().material.color != Color.red)
+            {
+                GameManager.Instance.score += GameManager.Instance.multiplier;
+                GameManager.Instance.multiplier++;
+            }
+            else
+            {
+                GameManager.Instance.multiplier = 1;
 
-    void OnTriggerStay(Collider other)
-    {
-        
-    }
+                if (GameManager.Instance.AntivirusCount > 0)
+                    GameManager.Instance.AntivirusCount--;
+                else
+                {
+                    Destroy(gameObject);
+                    GameManager.Instance.GameOver();
+                }
+            }
+        }
+        else if (other.gameObject.tag == "Antivirus")
+        {
+            if (other.gameObject.GetComponent<Renderer>().material.color != Color.red)
+            {
+                if(GameManager.Instance.AntivirusCount < 3)
+                    GameManager.Instance.AntivirusCount++;
+            }
+            else
+                GameManager.Instance.AntivirusCount = 0;
+        }
 
-    //void OnTriggerExit(Collider other)
-    //{
-    //    if (other.gameObject.tag == "Obstacle")
-    //        canChangeColor = true;
-    //}
+        GUIManager.Instance.UpdateGUI();
+        Destroy(other.gameObject);
+    }
 }
