@@ -1,5 +1,5 @@
 <h1 align="center">
-    <img src="./Documentation/Floppy-Man.png" width="384"/><br />
+    <img src="./Documentation/Floppy-Man.png" width="150"/><br />
     Floppy-Man
 </h1>
 
